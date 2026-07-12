@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "orange-inbox-prod-20260712-email",
+  "name": "orange-inbox-email",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": ["nodejs_compat"],
@@ -23,11 +23,11 @@
   "r2_buckets": [
     {
       "binding": "RAW_MAIL",
-      "bucket_name": "orange-inbox-prod-20260712-raw"
+      "bucket_name": "orange-inbox-raw"
     },
     {
       "binding": "ATTACHMENTS",
-      "bucket_name": "orange-inbox-prod-20260712-attachments"
+      "bucket_name": "orange-inbox-attachments"
     }
   ],
 
@@ -37,7 +37,7 @@
   "services": [
     {
       "binding": "WEB",
-      "service": "orange-inbox-prod-20260712-web"
+      "service": "orange-inbox-web"
     }
   ],
 

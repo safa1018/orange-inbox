@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# orange-inbox-prod-20260712: idempotent setup + deploy.
+# orange-inbox: idempotent setup + deploy.
 #
 # Creates (or finds) the D1 database, R2 buckets, and KV namespace this app
 # needs, patches the binding IDs into wrangler.jsonc, applies migrations, and
@@ -14,19 +14,19 @@ set -euo pipefail
 
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
   cat <<'HELP'
-orange-inbox-prod-20260712 setup + deploy.
+orange-inbox setup + deploy.
 
 Creates Cloudflare resources, applies migrations, deploys both Workers.
 Idempotent — re-running on an existing deploy skips creation and just
 re-applies migrations + redeploys.
 
 Resources created (one each, free-tier-eligible):
-  • D1 database         "orange-inbox-prod-20260712"
-  • R2 bucket           "orange-inbox-prod-20260712-raw"
-  • R2 bucket           "orange-inbox-prod-20260712-attachments"
+  • D1 database         "orange-inbox"
+  • R2 bucket           "orange-inbox-raw"
+  • R2 bucket           "orange-inbox-attachments"
   • KV namespace        "DRAFTS"
-  • Worker              "orange-inbox-prod-20260712-web"      (Next.js via OpenNext)
-  • Worker              "orange-inbox-prod-20260712-email"    (inbound MIME parser)
+  • Worker              "orange-inbox-web"      (Next.js via OpenNext)
+  • Worker              "orange-inbox-email"    (inbound MIME parser)
   • Secrets             INTERNAL_SECRET (both workers), VAPID_PRIVATE_KEY (web)
 
 Two manual steps after this script finishes — see the banner at the end.
@@ -104,17 +104,17 @@ else
 fi
 
 # ─── D1 ────────────────────────────────────────────────────────────────────
-log "D1: ensuring database 'orange-inbox-prod-20260712'"
-D1_ID=$(wr d1 list 2>&1 | grep -E '\borange-inbox-prod-20260712\b' | grep -oE "$uuid_re" | head -1 || true)
+log "D1: ensuring database 'orange-inbox'"
+D1_ID=$(wr d1 list 2>&1 | grep -E '\borange-inbox\b' | grep -oE "$uuid_re" | head -1 || true)
 if [ -z "$D1_ID" ]; then
-  D1_ID=$(wr d1 create orange-inbox-prod-20260712 2>&1 | grep -oE "$uuid_re" | head -1)
+  D1_ID=$(wr d1 create orange-inbox 2>&1 | grep -oE "$uuid_re" | head -1)
   ok "Created D1: $D1_ID"
 else
   ok "Found existing D1: $D1_ID"
 fi
 
 # ─── R2 ────────────────────────────────────────────────────────────────────
-for bucket in orange-inbox-prod-20260712-raw orange-inbox-prod-20260712-attachments; do
+for bucket in orange-inbox-raw orange-inbox-attachments; do
   log "R2: ensuring bucket '$bucket'"
   if wr r2 bucket info "$bucket" >/dev/null 2>&1; then
     ok "Bucket exists: $bucket"
@@ -174,7 +174,7 @@ WEB_DEPLOY=$(cd "$ROOT/web" && npm run deploy 2>&1)
 printf '%s\n' "$WEB_DEPLOY" | tail -10
 
 # Wrangler prints the deployed URL on a line like:
-#   "https://orange-inbox-prod-20260712-web.<subdomain>.workers.dev"
+#   "https://orange-inbox-web.<subdomain>.workers.dev"
 WEB_URL=$(printf '%s' "$WEB_DEPLOY" | grep -oE 'https://[a-z0-9.-]+\.workers\.dev' | head -1 || true)
 
 # ─── INTERNAL_SECRET ────────────────────────────────────────────────────────
@@ -256,14 +256,14 @@ Two manual steps to make it usable:
 
 1. Cloudflare Access (login):
    Zero Trust → Access → Applications → Add a self-hosted application
-   targeting your orange-inbox-prod-20260712-web Worker URL. Add an Access policy
+   targeting your orange-inbox-web Worker URL. Add an Access policy
    (e.g. "Emails ending with @yourdomain.com"). Without Access in
    front, the app shows "Sign in required".
 
 2. Email Routing (mail flow):
    In the Cloudflare dashboard, enable Email Routing for any domain
    you want to receive mail on, and add a rule sending mail to the
-   orange-inbox-prod-20260712-email Worker. Then sign into the app and add the
+   orange-inbox-email Worker. Then sign into the app and add the
    same domain through the sidebar's "+ Add mail domain" button.
 
 For local development:
