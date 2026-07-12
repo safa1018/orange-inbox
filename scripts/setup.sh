@@ -157,10 +157,8 @@ patch "$ROOT/email-worker/wrangler.jsonc" "REPLACE_WITH_D1_ID" "$D1_ID"
 # Keep existing checked-in IDs aligned with the account resource found above.
 sed -i -E "s/database_id[^,]*/database_id\": \"$D1_ID\"/" "$ROOT/web/wrangler.jsonc" "$ROOT/email-worker/wrangler.jsonc"
 
-# ─── migrations ────────────────────────────────────────────────────────────
-log "Applying D1 migrations to remote database"
-wr d1 migrations apply orange-inbox-prod-20260712 --remote
-ok "Migrations applied"
+# Migrations run through the Cloudflare API during initial provisioning.
+# Wrangler's name-based migration resolution can retain stale deleted IDs.
 
 # ─── deploy ─────────────────────────────────────────────────────────────────
 # Capture deploy output so we can pull the public URLs out of it for the
