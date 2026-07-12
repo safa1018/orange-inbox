@@ -163,19 +163,19 @@ sed -i -E "s/database_id[^,]*/database_id\": \"$D1_ID\"/" "$ROOT/web/wrangler.js
 # ─── deploy ─────────────────────────────────────────────────────────────────
 # Capture deploy output so we can pull the public URLs out of it for the
 # post-deploy health check below.
-log "Deploying email-worker"
-if ! EMAIL_DEPLOY=$(cd "$ROOT/email-worker" && env -u WORKERS_CI npx --yes wrangler deploy 2>&1); then
-  printf '%s\n' "$EMAIL_DEPLOY"
-  exit 1
-fi
-printf '%s\n' "$EMAIL_DEPLOY" | tail -10
-
 log "Deploying web (Next.js build via OpenNext — takes a couple minutes)"
 if ! WEB_DEPLOY=$(cd "$ROOT/web" && env -u WORKERS_CI npm run deploy 2>&1); then
   printf '%s\n' "$WEB_DEPLOY"
   exit 1
 fi
 printf '%s\n' "$WEB_DEPLOY" | tail -10
+
+log "Deploying email-worker"
+if ! EMAIL_DEPLOY=$(cd "$ROOT/email-worker" && env -u WORKERS_CI npx --yes wrangler deploy 2>&1); then
+  printf '%s\n' "$EMAIL_DEPLOY"
+  exit 1
+fi
+printf '%s\n' "$EMAIL_DEPLOY" | tail -10
 
 # Wrangler prints the deployed URL on a line like:
 #   "https://orange-inbox-web.<subdomain>.workers.dev"
