@@ -166,14 +166,14 @@ sed -i -E "s/database_id[^,]*/database_id\": \"$D1_ID\"/" "$ROOT/web/wrangler.js
 log "Deploying web (Next.js build via OpenNext — takes a couple minutes)"
 log "Generating web Worker binding types"
 (cd "$ROOT/web" && npm run cf-typegen >/dev/null)
-if ! WEB_DEPLOY=$(cd "$ROOT/web" && env -u WRANGLER_CI_OVERRIDE_NAME npm run deploy 2>&1); then
+if ! WEB_DEPLOY=$(cd "$ROOT/web" && env -u WRANGLER_CI_OVERRIDE_NAME -u WRANGLER_CI_MATCH_TAG npm run deploy 2>&1); then
   printf '%s\n' "$WEB_DEPLOY"
   exit 1
 fi
 printf '%s\n' "$WEB_DEPLOY" | tail -10
 
 log "Deploying email-worker"
-if ! EMAIL_DEPLOY=$(cd "$ROOT/email-worker" && env -u WRANGLER_CI_OVERRIDE_NAME npx --yes wrangler deploy 2>&1); then
+if ! EMAIL_DEPLOY=$(cd "$ROOT/email-worker" && env -u WRANGLER_CI_OVERRIDE_NAME -u WRANGLER_CI_MATCH_TAG npx --yes wrangler deploy 2>&1); then
   printf '%s\n' "$EMAIL_DEPLOY"
   exit 1
 fi
