@@ -154,6 +154,9 @@ patch "$ROOT/web/wrangler.jsonc"          "REPLACE_WITH_D1_ID" "$D1_ID"
 patch "$ROOT/web/wrangler.jsonc"          "REPLACE_WITH_KV_ID" "$KV_ID"
 patch "$ROOT/email-worker/wrangler.jsonc" "REPLACE_WITH_D1_ID" "$D1_ID"
 
+# Keep existing checked-in IDs aligned with the account resource found above.
+sed -i -E "s/database_id[^,]*/database_id\": \"$D1_ID\"/" "$ROOT/web/wrangler.jsonc" "$ROOT/email-worker/wrangler.jsonc"
+
 # ─── migrations ────────────────────────────────────────────────────────────
 log "Applying D1 migrations to remote database"
 wr d1 migrations apply orange-inbox --remote
