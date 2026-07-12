@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "orange-inbox-web",
+  "name": "orange-inbox-prod-20260712-web",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": [
@@ -14,16 +14,16 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "orange-inbox-web"
+      "service": "orange-inbox-prod-20260712-web"
     }
   ],
 
-  // Shared with email-worker. Run `wrangler d1 create orange-inbox` and paste the id.
+  // Shared with email-worker. Run `wrangler d1 create orange-inbox-prod-20260712` and paste the id.
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "orange-inbox",
-      "database_id": "674e4464-9b0f-43c1-9bf8-a5cb20ff4217",
+      "database_name": "orange-inbox-prod-20260712",
+      "database_id": "60d553ec-e6d7-4fc8-9653-f12f2930a04d",
       "migrations_dir": "../db/migrations"
     }
   ],
@@ -32,11 +32,11 @@
   "r2_buckets": [
     {
       "binding": "RAW_MAIL",
-      "bucket_name": "orange-inbox-raw"
+      "bucket_name": "orange-inbox-prod-20260712-raw"
     },
     {
       "binding": "ATTACHMENTS",
-      "bucket_name": "orange-inbox-attachments"
+      "bucket_name": "orange-inbox-prod-20260712-attachments"
     }
   ],
 

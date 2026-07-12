@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "orange-inbox-email",
+  "name": "orange-inbox-prod-20260712-email",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": ["nodejs_compat"],
@@ -15,19 +15,19 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "orange-inbox",
-      "database_id": "674e4464-9b0f-43c1-9bf8-a5cb20ff4217",
+      "database_name": "orange-inbox-prod-20260712",
+      "database_id": "60d553ec-e6d7-4fc8-9653-f12f2930a04d",
       "migrations_dir": "../db/migrations"
     }
   ],
   "r2_buckets": [
     {
       "binding": "RAW_MAIL",
-      "bucket_name": "orange-inbox-raw"
+      "bucket_name": "orange-inbox-prod-20260712-raw"
     },
     {
       "binding": "ATTACHMENTS",
-      "bucket_name": "orange-inbox-attachments"
+      "bucket_name": "orange-inbox-prod-20260712-attachments"
     }
   ],
 
@@ -37,7 +37,7 @@
   "services": [
     {
       "binding": "WEB",
-      "service": "orange-inbox-web"
+      "service": "orange-inbox-prod-20260712-web"
     }
   ],
 
