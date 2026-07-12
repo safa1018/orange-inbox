@@ -164,6 +164,8 @@ sed -i -E "s/database_id[^,]*/database_id\": \"$D1_ID\"/" "$ROOT/web/wrangler.js
 # Capture deploy output so we can pull the public URLs out of it for the
 # post-deploy health check below.
 log "Deploying web (Next.js build via OpenNext — takes a couple minutes)"
+log "Generating web Worker binding types"
+(cd "$ROOT/web" && npm run cf-typegen >/dev/null)
 if ! WEB_DEPLOY=$(cd "$ROOT/web" && env -u WORKERS_CI npm run deploy 2>&1); then
   printf '%s\n' "$WEB_DEPLOY"
   exit 1
